@@ -1,18 +1,30 @@
-name: GitHub Actions Demo
-run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
-on: [push]
+name: Supernova <> Figma Token sync
+on:
+  # Any branch you want
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
 jobs:
-  Explore-GitHub-Actions:
+  sync_tokens:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
-      - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
-      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
-      - name: Check out repository code
-        uses: actions/checkout@v3
-      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
-      - run: echo "🖥️ The workflow is now ready to test your code on the runner."
-      - name: List files in the repository
-        run: |
-          ls ${{ github.workspace }}
-      - run: echo "🍏 This job's status is ${{ job.status }}."
+      # Check out repository under $GITHUB_WORKSPACE, so the CLI utility can read it
+      - uses: actions/checkout@v3
+
+      # Setup node to use with CLI. 14+ is required
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 14
+      
+      # Install Supernova CLI
+      - name: Install Supernova CLI dependency
+        run: npm install --g @supernovaio/cli
+
+      # Sync tokens
+      - name: Synchronize tokens with Supernova 
+        run: supernova sync-tokens \
+        --apiKey="sn.LFPVoHNRXd7TEGb95XBSTUoklrbwybg85RDUffXmU2VFMQohMUKnoThORAXNHaJ8plbP1C8bAWvx1QWlztSwfaqNkmoLxGUC" \
+        --designSystemId=24097 \
+        --tokenFilePath="${{ github.workspace }}/data/tokens.json" \
+        --configFilePath="${{ github.workspace }}/data/supernova.settings.json" \
