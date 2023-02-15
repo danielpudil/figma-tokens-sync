@@ -2,7 +2,7 @@
     "mode": "single-file",
     "mapping": [{
             "tokensTheme": "Light",
-            "supernovaBrand": "Austin",
+            "supernovaBrand": "Default",
             "supernovaTheme": null
         }
     ],
